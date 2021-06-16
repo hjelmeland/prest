@@ -614,6 +614,17 @@ func (adapter *Postgres) Query(SQL string, params ...interface{}) (sc adapters.S
 	return
 }
 
+// Send SET ROLE to postgres. Return nil if OK, otherwise return the error
+func (adapter *Postgres) SetRole(role string) (err error) {
+	db, err := connection.Get()
+	if err  != nil {
+		return
+	}
+	sql := fmt.Sprintf(`SET ROLE "%s"`, strings.Replace(role, `"`, `""`, -1))
+	_, err = db.Exec(sql)
+	return
+}
+
 // QueryCount process queries with count
 func (adapter *Postgres) QueryCount(SQL string, params ...interface{}) (sc adapters.Scanner) {
 	db, err := connection.Get()

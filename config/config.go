@@ -56,6 +56,7 @@ type Prest struct {
 	JWTKey           string
 	JWTAlgo          string
 	JWTWhiteList     []string
+	JWTClaimSetRole  string
 	MigrationsPath   string
 	QueriesPath      string
 	AccessConf       AccessConf
@@ -185,6 +186,7 @@ func Parse(cfg *Prest) (err error) {
 	cfg.JWTKey = viper.GetString("jwt.key")
 	cfg.JWTAlgo = viper.GetString("jwt.algo")
 	cfg.JWTWhiteList = viper.GetStringSlice("jwt.whitelist")
+	cfg.JWTClaimSetRole = viper.GetString("jwt.claimsetrole")
 	cfg.MigrationsPath = viper.GetString("migrations")
 	cfg.AccessConf.Restrict = viper.GetBool("access.restrict")
 	cfg.AccessConf.IgnoreTable = viper.GetStringSlice("access.ignore_table")

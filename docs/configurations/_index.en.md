@@ -105,6 +105,23 @@ The supported signing algorithms are:
 * The [RSA signing method](https://en.wikipedia.org/wiki/RSA_(cryptosystem)): `RS256`,`RS384`,`RS512`
 * The [ECDSA signing method](https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm): `ES256`,`ES384`,`ES512`
 
+### Map JWT claim to PostgreSQL SET ROLE
+
+Configuration option `jwt.claimsetrole` enable using PostgreSQL roles to give different users different permissions.
+
+By setting `jwt.claimsetrole` to a JWT claim name, pREST will look up the value of that claim in the JWT,
+and execute `SET ROLE` with the claim value towards PostgreSQL before executing the request.
+
+If the named claim is not found in the JWT, or if the `SET ROLE` fails, the request is rejected with 403 Forbidden.
+
+```toml
+[jwt]
+default = true
+claimsetrole = "auth_role"
+```
+or use environment variable: `PREST_JWT_CLAIMSETROLE=auth_role`.
+
+
 ## White list
 
 By default the endpoints `/auth` do not require JWT, the **whitelist** option serves to configure which endpoints will not ask for jwt token

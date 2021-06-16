@@ -151,6 +151,20 @@ func JwtMiddleware(key string, algo string) negroni.Handler {
 			w.Write([]byte(fmt.Sprintf(`{"error": "%v"}`, err.Error())))
 			return
 		}
+		// handle jwt.claimsetrole / PREST_JWT_CLAIMSETROLE option
+		if JWTClaimSetRole := config.PrestConf.JWTClaimSetRole; JWTClaimSetRole != "" {
+			claims := r.Context().Value("user").(* jwt.Token).Claims
+			jwtRole := claims.(jwt.MapClaims)[JWTClaimSetRole]
+			if jwtRole == nil {
+				http.Error(w, "JWT role claim not found: " + JWTClaimSetRole, http.StatusForbidden)
+				return
+			}
+			err = config.PrestConf.Adapter.SetRole(jwtRole.(string))
+			if err != nil {
+				http.Error(w, "SET ROLE failed: " + err.Error(), http.StatusForbidden)
+				return
+			}
+		}
 		next(w, r)
 	})
 }
